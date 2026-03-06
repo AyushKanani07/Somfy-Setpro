@@ -457,7 +457,7 @@ function Sidebar() {
       }
       if (isDevice) {
         const menuItems = [];
-        if (node.data.device_type === 'motor') {
+        if (['motor', 'rts-receiver', 'rts-transmitter'].includes(node.data.device_type)) {
           menuItems.push(
             {
               label: 'Rename',

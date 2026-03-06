@@ -74,7 +74,7 @@ const IDELayoutComponent: React.FC<IDELayoutProps> = ({ children }) => {
       <ClientOnly>
         <PanelGroup direction="horizontal" className="flex-1">
           {/* Sidebar */}
-          <Panel minSize={19} defaultSize={22} maxSize={50}>
+          <Panel minSize={15} defaultSize={22} maxSize={50}>
             <Sidebar />
           </Panel>
 
