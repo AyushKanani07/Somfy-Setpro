@@ -21,6 +21,7 @@
         "build:backend": "npm run clean:obfuscate && npm run build && npm run obfuscate",
         "electron:obfuscate": "javascript-obfuscator ../../dist/main.js --output ../../obfuscate/main.js",
         "electron:dev": "npm run clean:obfuscate && npm run electron:build && set APP_ENV=UAT&& electron-builder build --win --publish=never",
+        "electron:prod": "npm run clean:obfuscate && npm run electron:build && set APP_ENV=PROD&& electron-builder build --win --publish=always",
         "electron:build": "node esbuild.config.js"
     },
     "keywords": [
