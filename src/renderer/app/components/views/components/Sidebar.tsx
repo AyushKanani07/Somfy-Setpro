@@ -1,42 +1,45 @@
-import { EllipsisVertical, Plus, TriangleAlert } from "lucide-react";
-import { Tree } from "primereact/tree";
-import type { TreeNode } from "primereact/treenode";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router";
-import DeleteFloorDialog from "~/components/Dialogs/DeleteFloorDialog";
-import DeleteMotorDialog from "~/components/Dialogs/DeleteMotorDialog";
-import DeleteRoomDialog from "~/components/Dialogs/DeleteRoomDialog";
-import UpdateFloorDialog from "~/components/Dialogs/UpdateFloorDialog";
-import UpdateMotorDialog from "~/components/Dialogs/UpdateMotorDialog";
-import UpdateRoomDialog from "~/components/Dialogs/UpdateRoomDialog";
+import { EllipsisVertical, Plus, TriangleAlert } from 'lucide-react';
+import { FaListOl } from 'react-icons/fa';
+import { Tree } from 'primereact/tree';
+import type { TreeNode } from 'primereact/treenode';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
+import DeleteFloorDialog from '~/components/Dialogs/DeleteFloorDialog';
+import DeleteMotorDialog from '~/components/Dialogs/DeleteMotorDialog';
+import DeleteRoomDialog from '~/components/Dialogs/DeleteRoomDialog';
+import UpdateFloorDialog from '~/components/Dialogs/UpdateFloorDialog';
+import UpdateMotorDialog from '~/components/Dialogs/UpdateMotorDialog';
+import UpdateRoomDialog from '~/components/Dialogs/UpdateRoomDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Input } from "~/components/ui/input";
-import { ICON_WARNING_FILL_COLOR } from "~/constant/constant";
-import { useComport } from "~/hooks/useComport";
-import { useDevice } from "~/hooks/useDevice";
-import { useFloor } from "~/hooks/useFloor";
-import { useMotors } from "~/hooks/useMotors";
-import { useRooms } from "~/hooks/useRooms";
-import { useGroupView } from "~/hooks/useGroupView";
-import type { UpdateFloorPayload } from "~/interfaces/floor";
-import type { UpdateMotorPayload } from "~/interfaces/motor";
-import type { UpdateRoomPayload } from "~/interfaces/room";
-import { cn } from "~/lib/utils";
-import { transformFloorsToTreeNodes } from "~/utils/floorTreeUtils";
-import { SetProButton } from "~/components/sharedComponent/setProButton";
-import { AddKeypadDialog } from "~/components/Dialogs/AddKeypadDialog";
-import type { KeypadDataForEdit } from "~/interfaces/keypad";
-import { useKeypad } from "~/hooks/useKeypad";
-import { DeleteKeypadDialog } from "~/components/Dialogs/DeleteKeypadDialog";
+} from '~/components/ui/dropdown-menu';
+import { Input } from '~/components/ui/input';
+import { ICON_WARNING_FILL_COLOR } from '~/constant/constant';
+import { useComport } from '~/hooks/useComport';
+import { useDevice } from '~/hooks/useDevice';
+import { useFloor } from '~/hooks/useFloor';
+import { useMotors } from '~/hooks/useMotors';
+import { useRooms } from '~/hooks/useRooms';
+import { useGroupView } from '~/hooks/useGroupView';
+import type { UpdateFloorPayload } from '~/interfaces/floor';
+import type { UpdateMotorPayload } from '~/interfaces/motor';
+import type { UpdateRoomPayload } from '~/interfaces/room';
+import { cn } from '~/lib/utils';
+import { transformFloorsToTreeNodes } from '~/utils/floorTreeUtils';
+import { SetProButton } from '~/components/sharedComponent/setProButton';
+import { AddKeypadDialog } from '~/components/Dialogs/AddKeypadDialog';
+import type { KeypadDataForEdit } from '~/interfaces/keypad';
+import { useKeypad } from '~/hooks/useKeypad';
+import { DeleteKeypadDialog } from '~/components/Dialogs/DeleteKeypadDialog';
+import { MdOutlineOpenInNew } from 'react-icons/md';
+import { communicationLogService } from '~/services/communicationLogService';
 
 function Sidebar() {
   const location = useLocation();
-  const showCheckBoxes = location.pathname === "/group-view";
+  const showCheckBoxes = location.pathname === '/group-view';
   const {
     floors,
     selectedNode,
@@ -74,19 +77,20 @@ function Sidebar() {
   const { setCurrentDragItem, clearCurrentDragItem } = useGroupView();
   const [expandedKeys, setExpandedKeys] = useState<Record<string, boolean>>({});
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
-  const [filterValue, setFilterValue] = useState<string>("");
+  const [filterValue, setFilterValue] = useState<string>('');
   const [editingNodeKey, setEditingNodeKey] = useState<string | null>(null);
-  const [editingNodeName, setEditingNodeName] = useState<string>("");
+  const [editingNodeName, setEditingNodeName] = useState<string>('');
   const [dragOverRoomKey, setDragOverRoomKey] = useState<string | null>(null);
   const [draggingDeviceKey, setDraggingDeviceKey] = useState<string | null>(
-    null
+    null,
   );
   const editInputRef = useRef<HTMLInputElement>(null);
 
   const treeNodes: TreeNode[] = transformFloorsToTreeNodes(floors);
   const defaultExpandedKeys: Record<string, boolean> = {};
 
-  const [keypadDataForEdit, setKeypadDataForEdit] = useState<KeypadDataForEdit | null>(null);
+  const [keypadDataForEdit, setKeypadDataForEdit] =
+    useState<KeypadDataForEdit | null>(null);
 
   //#region handlers
   const handleClickOnEditFloor = (floorId: number, floorName: string) => {
@@ -122,15 +126,15 @@ function Sidebar() {
       device_id: keypadData.id,
       name: keypadData.name,
       address: keypadData.address,
-      key_count: keypadData.key_count
-    }
+      key_count: keypadData.key_count,
+    };
     setKeypadDataForEdit(payload);
     openKeypadFormDialog();
-  }
+  };
 
   const handleDeleteKeypad = (keypadId: number) => {
     openDeleteKeypadDialog(keypadId);
-  }
+  };
 
   /**
    * Initialize expanded keys with all floor-level parents expanded by default
@@ -144,7 +148,7 @@ function Sidebar() {
     return () => {
       setMultipleSelectedMotorId([]);
       // setSelectedMotorId(null);
-    }
+    };
   }, []);
 
   /**
@@ -162,9 +166,9 @@ function Sidebar() {
     };
 
     if (editingNodeKey) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
       return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener('mousedown', handleClickOutside);
       };
     }
   }, [editingNodeKey]);
@@ -222,22 +226,27 @@ function Sidebar() {
 
   const handleNodeSelect = (event: any) => {
     const node = event.value;
-    console.log("node: ", node);
+    console.log('node: ', node);
     setSelectedKey(node);
     setSelectedNode(null);
 
-    if (typeof node === "string") {
-      if (node?.startsWith("fi:") && !node?.includes("ri:")) {
-        const floorId = Number(node?.split("fi:")[1]);
-        setSelectedNode({ type: "floor", floorId });
-      } else if (node?.includes("ri:") && !node?.includes("di:")) {
-        const floorId = Number(node?.split("fi:")[1].split("-")[0]);
+    if (typeof node === 'string') {
+      if (node?.startsWith('fi:') && !node?.includes('ri:')) {
+        const floorId = Number(node?.split('fi:')[1]);
+        setSelectedNode({ type: 'floor', floorId });
+      } else if (node?.includes('ri:') && !node?.includes('di:')) {
+        const floorId = Number(node?.split('fi:')[1].split('-')[0]);
         // setSelectedNode({ type: "room", floorId });
-      } else if (node?.includes("di:")) {
-        const deviceId = Number(node?.split("di:")[1]);
-        const floorId = Number(node?.split("fi:")[1].split("-")[0]);
-        const roomId = Number(node?.split("ri:")[1].split("-")[0]);
-        const deviceType = floors.find(floor => floor.id === floorId)?.child.find(room => room.id === roomId)?.child.find(device => device.id === deviceId)?.device_type || null;
+      } else if (node?.includes('di:')) {
+        const deviceId = Number(node?.split('di:')[1]);
+        const floorId = Number(node?.split('fi:')[1].split('-')[0]);
+        const roomId = Number(node?.split('ri:')[1].split('-')[0]);
+        const deviceType =
+          floors
+            .find((floor) => floor.id === floorId)
+            ?.child.find((room) => room.id === roomId)
+            ?.child.find((device) => device.id === deviceId)?.device_type ||
+          null;
 
         setSelectedMotorId(deviceId);
         setSelectedDeviceId(deviceId);
@@ -245,8 +254,10 @@ function Sidebar() {
       }
     }
 
-    if (typeof node === "object" && node !== null) {
-      const selectedDeviceIds = Object.keys(node).filter(key => key.includes('di:')).map(key => Number(key.split('di:')[1]));
+    if (typeof node === 'object' && node !== null) {
+      const selectedDeviceIds = Object.keys(node)
+        .filter((key) => key.includes('di:'))
+        .map((key) => Number(key.split('di:')[1]));
       setMultipleSelectedMotorId(selectedDeviceIds);
     }
   };
@@ -275,9 +286,9 @@ function Sidebar() {
 
     try {
       // Parse node key to determine type and call appropriate update function
-      if (nodeKey.startsWith("fi:") && !nodeKey.includes("ri:")) {
+      if (nodeKey.startsWith('fi:') && !nodeKey.includes('ri:')) {
         // Floor node - implement your API call
-        const floorId = Number(nodeKey.split("fi:")[1]);
+        const floorId = Number(nodeKey.split('fi:')[1]);
         const payload: UpdateFloorPayload = {
           floor_id: floorId,
           name: editingNodeName,
@@ -286,9 +297,9 @@ function Sidebar() {
         if (response) {
           fetchFloorsThunk();
         }
-      } else if (nodeKey.includes("ri:") && !nodeKey.includes("di:")) {
+      } else if (nodeKey.includes('ri:') && !nodeKey.includes('di:')) {
         // Room node - implement your API call
-        const roomId = Number(nodeKey.split("ri:")[1]);
+        const roomId = Number(nodeKey.split('ri:')[1]);
         const payload: UpdateRoomPayload = {
           room_id: roomId,
           name: editingNodeName,
@@ -297,15 +308,15 @@ function Sidebar() {
         if (response) {
           fetchFloorsThunk();
         }
-      } else if (nodeKey.includes("di:")) {
+      } else if (nodeKey.includes('di:')) {
         // Device node - implement your API call
-        const deviceId = Number(nodeKey.split("di:")[1]);
+        const deviceId = Number(nodeKey.split('di:')[1]);
         const payload: UpdateMotorPayload = {
           motorId: deviceId,
           name: editingNodeName,
         };
 
-        if (node.data.device_type === "motor") {
+        if (node.data.device_type === 'motor') {
           const response = await updateMotorThunk(payload).unwrap();
           if (response) {
             fetchFloorsThunk();
@@ -314,7 +325,7 @@ function Sidebar() {
       }
       setEditingNodeKey(null);
     } catch (error) {
-      console.error("Error updating node name:", error);
+      console.error('Error updating node name:', error);
     }
   };
 
@@ -323,7 +334,7 @@ function Sidebar() {
    */
   const cancelEditingNode = () => {
     setEditingNodeKey(null);
-    setEditingNodeName("");
+    setEditingNodeName('');
   };
 
   /**
@@ -332,9 +343,9 @@ function Sidebar() {
    */
   const nodeTemplate = (node: TreeNode) => {
     const isRoom =
-      node.key?.toString().includes("ri:") &&
-      !node.key?.toString().includes("di:");
-    const isDevice = node.key?.toString().includes("di:");
+      node.key?.toString().includes('ri:') &&
+      !node.key?.toString().includes('di:');
+    const isDevice = node.key?.toString().includes('di:');
     const isDragOverThis = dragOverRoomKey === node.key && isRoom;
 
     if (editingNodeKey === node.key) {
@@ -346,9 +357,9 @@ function Sidebar() {
             value={editingNodeName}
             onChange={(e) => setEditingNodeName(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 saveNodeName(node);
-              } else if (e.key === "Escape") {
+              } else if (e.key === 'Escape') {
                 cancelEditingNode();
               }
             }}
@@ -365,7 +376,7 @@ function Sidebar() {
 
     const renderDeviceIcon = () => {
       switch (type) {
-        case "motor":
+        case 'motor':
           return (
             <div className="relative">
               <img
@@ -382,7 +393,7 @@ function Sidebar() {
               )}
             </div>
           );
-        case "keypad":
+        case 'keypad':
           return (
             <div>
               <img
@@ -392,7 +403,7 @@ function Sidebar() {
               />
             </div>
           );
-        case "shade":
+        case 'shade':
           return (
             <div>
               <img
@@ -402,7 +413,7 @@ function Sidebar() {
               />
             </div>
           );
-        case "controller":
+        case 'controller':
           return (
             <div>
               <img
@@ -433,12 +444,12 @@ function Sidebar() {
       if (isRoom) {
         return [
           {
-            label: "Edit Room",
-            action: () => handleClickOnEditRoom(node.data.id, node.field ?? ""),
+            label: 'Edit Room',
+            action: () => handleClickOnEditRoom(node.data.id, node.field ?? ''),
             show: true,
           },
           {
-            label: "Delete Room",
+            label: 'Delete Room',
             action: () => handleDeleteRoom(node.data.id),
             show: true,
           },
@@ -446,45 +457,50 @@ function Sidebar() {
       }
       if (isDevice) {
         const menuItems = [];
-        if (node.data.device_type === "motor") {
-          menuItems.push({
-            label: "Rename",
-            action: () => handleRenameMotor(node.data.id, node.field ?? ""),
-            show: isComportConnected,
-          },
+        if (node.data.device_type === 'motor') {
+          menuItems.push(
             {
-              label: "Delete Device",
+              label: 'Rename',
+              action: () => handleRenameMotor(node.data.id, node.field ?? ''),
+              show: isComportConnected,
+            },
+            {
+              label: 'Delete Device',
               action: () => handleDeleteMotor(node.data.id),
               show: true,
-            });
+            },
+          );
         }
 
-        if (node.data.device_type === "keypad") {
-          menuItems.push({
-            label: "Edit Keypad",
-            action: () => handleEditKeypad(node.data),
-            show: true,
-          }, {
-            label: "Delete Keypad",
-            action: () => handleDeleteKeypad(node.data.id),
-            show: true,
-          });
+        if (node.data.device_type === 'keypad') {
+          menuItems.push(
+            {
+              label: 'Edit Keypad',
+              action: () => handleEditKeypad(node.data),
+              show: true,
+            },
+            {
+              label: 'Delete Keypad',
+              action: () => handleDeleteKeypad(node.data.id),
+              show: true,
+            },
+          );
         }
         return menuItems;
       }
       return [
         {
-          label: "Edit Floor",
-          action: () => handleClickOnEditFloor(node.data.id, node.field ?? ""),
+          label: 'Edit Floor',
+          action: () => handleClickOnEditFloor(node.data.id, node.field ?? ''),
           show: true,
         },
         {
-          label: "Delete Floor",
+          label: 'Delete Floor',
           action: () => handleDeleteFloor(node.data.id),
           show: true,
         },
         {
-          label: "Add Room",
+          label: 'Add Room',
           action: () => handleAddRoomToFloor(node.data.id),
           show: true,
         },
@@ -500,19 +516,19 @@ function Sidebar() {
           if (isDevice && showCheckBoxes) {
             const deviceId = node.data.id;
             const dragData = {
-              type: "room-child-device" as const,
+              type: 'room-child-device' as const,
               deviceId: deviceId,
               deviceName: node.label as string,
               deviceType: node.data.device_type,
             };
-            console.log("🚀 Dragging room child device:", dragData);
+            console.log('🚀 Dragging room child device:', dragData);
 
             // Set drag data in dataTransfer
             e.dataTransfer.setData(
-              "application/json",
-              JSON.stringify(dragData)
+              'application/json',
+              JSON.stringify(dragData),
             );
-            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.effectAllowed = 'move';
 
             // Store in Redux state
             setCurrentDragItem(dragData);
@@ -523,7 +539,7 @@ function Sidebar() {
         }}
         onDragEnd={(e) => {
           if (isDevice && showCheckBoxes) {
-            console.log("✅ Drag ended for device:", node.data.id);
+            console.log('✅ Drag ended for device:', node.data.id);
 
             // Clear Redux state
             clearCurrentDragItem();
@@ -551,20 +567,20 @@ function Sidebar() {
         onDrop={(e) => {
           setDragOverRoomKey(null);
 
-          const data = e.dataTransfer.getData("text/plain");
+          const data = e.dataTransfer.getData('text/plain');
           if (data && isRoom) {
             try {
               const draggedItem = JSON.parse(data);
-              if (draggedItem.type === "unassigned-device") {
+              if (draggedItem.type === 'unassigned-device') {
                 const targetRoomId = Number(
-                  (node.key as string).split("ri:")[1]
+                  (node.key as string).split('ri:')[1],
                 );
                 const deviceId = draggedItem.deviceId;
                 console.log(
-                  "✅ Dropped device",
+                  '✅ Dropped device',
                   deviceId,
-                  "to room",
-                  targetRoomId
+                  'to room',
+                  targetRoomId,
                 );
                 // Update API
                 updateMotorRoomId(deviceId, targetRoomId);
@@ -572,16 +588,16 @@ function Sidebar() {
                 moveDeviceToAssigned(deviceId);
               }
             } catch (error) {
-              console.error("Error handling drop on node:", error);
+              console.error('Error handling drop on node:', error);
             }
           }
         }}
       >
         <span
           className={cn(
-            "cursor-pointer px-1 rounded text-sm flex justify-start items-center gap-4",
-            isDragOverThis ? "bg-blue-100 text-blue-900 font-semibold" : "",
-            draggingDeviceKey === node.key ? "opacity-50 cursor-grabbing" : ""
+            'cursor-pointer px-1 rounded text-sm flex justify-start items-center gap-4',
+            isDragOverThis ? 'bg-blue-100 text-blue-900 font-semibold' : '',
+            draggingDeviceKey === node.key ? 'opacity-50 cursor-grabbing' : '',
           )}
         >
           {type ? renderDeviceIcon() : null}
@@ -593,9 +609,9 @@ function Sidebar() {
               size={20}
               onClick={(e) => e.stopPropagation()}
               className={cn(
-                "text-iconColor absolute right-0 cursor-pointer",
-                isRoom && "-right-[11px]",
-                isDevice && "-right-[21px]"
+                'text-iconColor absolute right-0 cursor-pointer',
+                isRoom && '-right-[11px]',
+                isDevice && '-right-[21px]',
               )}
             />
           </DropdownMenuTrigger>
@@ -627,21 +643,21 @@ function Sidebar() {
     const dragKey = String(dragNode.key);
     const dropKey = String(dropNode.key);
 
-    const isRoom = dragKey.includes("ri:") && !dragKey.includes("di:");
-    const isDevice = dragKey.includes("di:");
-    const isFloor = dragKey.startsWith("fi:") && !dragKey.includes("ri:");
+    const isRoom = dragKey.includes('ri:') && !dragKey.includes('di:');
+    const isDevice = dragKey.includes('di:');
+    const isFloor = dragKey.startsWith('fi:') && !dragKey.includes('ri:');
 
     const isDropTargetFloor =
-      dropKey.startsWith("fi:") && !dropKey.includes("ri:");
+      dropKey.startsWith('fi:') && !dropKey.includes('ri:');
     const isDropTargetRoom =
-      dropKey.includes("ri:") && !dropKey.includes("di:");
+      dropKey.includes('ri:') && !dropKey.includes('di:');
 
     // 3. Handle ROOM drag and drop to FLOOR
     if (isRoom && isDropTargetFloor) {
       // 5. Extract floor IDs
-      const dragRoomId = Number(dragKey.split("ri:")[1]);
-      const sourceFloorId = Number(dragKey.split("fi:")[1].split("-")[0]);
-      const targetFloorId = Number(dropKey.split("fi:")[1]);
+      const dragRoomId = Number(dragKey.split('ri:')[1]);
+      const sourceFloorId = Number(dragKey.split('fi:')[1].split('-')[0]);
+      const targetFloorId = Number(dropKey.split('fi:')[1]);
 
       // 6. Block dropping on same floor
       if (sourceFloorId === targetFloorId) {
@@ -656,14 +672,14 @@ function Sidebar() {
     // 4. Handle DEVICE drag and drop to ROOM
     if (isDevice && isDropTargetRoom) {
       // 5. Extract device and target room IDs
-      const deviceParts = dragKey.split("-");
-      const dragDeviceId = Number(deviceParts[2].split("di:")[1]);
+      const deviceParts = dragKey.split('-');
+      const dragDeviceId = Number(deviceParts[2].split('di:')[1]);
 
-      const dropRoomParts = dropKey.split("-");
-      const targetRoomId = Number(dropRoomParts[1].split("ri:")[1]);
+      const dropRoomParts = dropKey.split('-');
+      const targetRoomId = Number(dropRoomParts[1].split('ri:')[1]);
 
       // Extract source room ID from drag key
-      const sourceRoomId = Number(dragKey.split("-")[1].split("ri:")[1]);
+      const sourceRoomId = Number(dragKey.split('-')[1].split('ri:')[1]);
 
       // 6. Block dropping on same room
       if (sourceRoomId === targetRoomId) {
@@ -680,20 +696,24 @@ function Sidebar() {
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    const data = event.dataTransfer.getData("text/plain");
+    const data = event.dataTransfer.getData('text/plain');
     if (data) {
       try {
         const draggedItem = JSON.parse(data);
-        if (draggedItem.type === "unassigned-device") {
+        if (draggedItem.type === 'unassigned-device') {
           event.preventDefault();
           event.stopPropagation();
-          event.dataTransfer.dropEffect = "move";
+          event.dataTransfer.dropEffect = 'move';
         }
       } catch (error) {
         // Not a valid JSON, ignore
       }
     }
   };
+
+  const goToCommunicationLog = () => {
+    communicationLogService.openCommunicationLogWindow();
+  }
 
   const handleTreeDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -717,7 +737,8 @@ function Sidebar() {
           <SetProButton
             className="px-3 gap-1"
             type="submit"
-            onClick={openCreateFloorDialog}>
+            onClick={openCreateFloorDialog}
+          >
             <Plus /> Add Floors
           </SetProButton>
         </div>
@@ -733,7 +754,7 @@ function Sidebar() {
         </div>
       </div>
       <div
-        className="h-full w-full bg-red-400"
+        className="h-full w-full overflow-y-auto"
         onDragOver={handleDragOver}
         onDrop={handleTreeDrop}
       >
@@ -745,10 +766,24 @@ function Sidebar() {
           onToggle={(e) => setExpandedKeys(e.value as Record<string, boolean>)}
           selectionKeys={selectedKey}
           onSelectionChange={handleNodeSelect}
-          selectionMode={showCheckBoxes ? "checkbox" : "single"}
+          selectionMode={showCheckBoxes ? 'checkbox' : 'single'}
           className="rounded-none p-0 h-full"
           nodeTemplate={nodeTemplate}
         />
+      </div>
+      <div className="bottom-0 relative flex flex-0 items-center justify-start h-14 px-4 md:px-3 z-49 bg-transparent print:hidden">
+        <button className="" onClick={goToCommunicationLog}>
+          <FaListOl />
+        </button>
+        <div
+          onClick={goToCommunicationLog}
+          className="border border-borderColor/50 rounded-full px-3 py-1 w-full ml-3 cursor-pointer"
+        >
+          <span>Completed</span>
+          <span className="absolute right-6 top-4">
+            <MdOutlineOpenInNew />
+          </span>
+        </div>
       </div>
 
       <UpdateFloorDialog />
@@ -759,12 +794,16 @@ function Sidebar() {
       <DeleteRoomDialog />
       <DeleteKeypadDialog />
       {keypadDataForEdit && keypadFormDialog && (
-        <AddKeypadDialog title="Edit Keypad" mode="edit"
+        <AddKeypadDialog
+          title="Edit Keypad"
+          mode="edit"
           deviceId={keypadDataForEdit.device_id}
           defaultValues={{
             ...keypadDataForEdit,
-            key_count: keypadDataForEdit.key_count.toString() as "6" | "8"
-          }} setDataNull={setKeypadDataForEdit}></AddKeypadDialog>
+            key_count: keypadDataForEdit.key_count.toString() as '6' | '8',
+          }}
+          setDataNull={setKeypadDataForEdit}
+        ></AddKeypadDialog>
       )}
     </div>
   );

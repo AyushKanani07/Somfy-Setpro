@@ -1,24 +1,25 @@
-import { useAppSelector } from "~/hooks/redux";
-import { Button } from "~/components/ui/button";
-import { ArrowDownToLine, ArrowUpToLine, Download, Edit } from "lucide-react";
-import { useProject } from "~/hooks";
-import CreateNewProjectDialog from "../Dialogs/CreateNewProjectDialog";
+import { useAppSelector } from '~/hooks/redux';
+import { Button } from '~/components/ui/button';
+import { ArrowDownToLine, ArrowUpToLine, Download, Edit } from 'lucide-react';
+import { useProject } from '~/hooks';
+import CreateNewProjectDialog from '../Dialogs/CreateNewProjectDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { toast } from "sonner";
-import { ReportService } from "~/services/reportService";
-import { useState } from "react";
-import ConfirmDialog from "../sharedComponent/ConfirmDialog";
-import { projectService } from "~/services/projectService";
-import { ImportExportProjectDialog } from "../Dialogs/ImportExportProjectDialog";
-import MotorActionIcon from "./components/deviceConfigView/motor-detail/motorControl/MotorActionIcon";
-import { useComport } from "~/hooks/useComport";
-import { Icons } from "../icons/Icons";
-import { motorService } from "~/services/motorService";
+} from '../ui/dropdown-menu';
+import { toast } from 'sonner';
+import { ReportService } from '~/services/reportService';
+import { useState } from 'react';
+import ConfirmDialog from '../sharedComponent/ConfirmDialog';
+import { projectService } from '~/services/projectService';
+import { ImportExportProjectDialog } from '../Dialogs/ImportExportProjectDialog';
+import MotorActionIcon from './components/deviceConfigView/motor-detail/motorControl/MotorActionIcon';
+import { useComport } from '~/hooks/useComport';
+import { Icons } from '../icons/Icons';
+import { motorService } from '~/services/motorService';
+import { communicationLogService } from '~/services/communicationLogService';
 
 interface ProjectStats {
   rooms: number;
@@ -51,12 +52,12 @@ function DashboardView() {
     try {
       const data = await ReportService.getReport();
       const blob = new Blob([data], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = url;
-      link.download = "FloorPlan.xlsx";
+      link.download = 'FloorPlan.xlsx';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -72,7 +73,7 @@ function DashboardView() {
       );
       const url = window.URL.createObjectURL(data);
 
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = `${selectedProject.project_id}.somfy`;
       document.body.appendChild(a);
@@ -87,7 +88,7 @@ function DashboardView() {
 
   const handleMoveToTopAll = async () => {
     try {
-      await motorService.motorMoveToAll({ function_type: "up" });
+      await motorService.motorMoveToAll({ function_type: 'up' });
     } catch (error) {
       toast.error((error as Error).message);
     }
@@ -95,7 +96,7 @@ function DashboardView() {
 
   const handleMoveToBottomAll = async () => {
     try {
-      await motorService.motorMoveToAll({ function_type: "down" });
+      await motorService.motorMoveToAll({ function_type: 'down' });
     } catch (error) {
       toast.error((error as Error).message);
     }
@@ -120,7 +121,7 @@ function DashboardView() {
   const sendMotorTo = async (position: number) => {
     try {
       await motorService.motorMoveToAll({
-        function_type: "pos_per",
+        function_type: 'pos_per',
         value_position: position,
       });
     } catch (error) {
@@ -128,9 +129,15 @@ function DashboardView() {
     }
   };
 
-  const openLogs = () => {};
+  const openLogs = () => {
+    communicationLogService.openCommunicationLogWindow();
+  };
 
-  const openUserGuide = () => {};
+  const openUserGuide = () => {
+    window.serialPort.openUrl(
+      'https://www.somfypro.com/documents/531668/0/set-pro-user-guide',
+    );
+  };
 
   return (
     <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100">
@@ -170,14 +177,14 @@ function DashboardView() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                  key={"export"}
+                  key={'export'}
                   className="p-3 text-textDarkColor text-base hover:bg-secondaryBackground"
                   onClick={() => setExportSettingDialogOpen(true)}
                 >
                   Export Project
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  key={"report"}
+                  key={'report'}
                   className="p-3 text-textDarkColor text-base hover:bg-secondaryBackground"
                   onClick={integrationReport}
                 >
@@ -190,7 +197,7 @@ function DashboardView() {
       </div>
 
       <div className="flex flex-row p-10 gap-4">
-        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full flex flex-col gap-4 items-center justify-center min-w-72 max-w-90">
+        <div className="rounded-2xl border border-gray-300 p-8 max-w-md w-full flex flex-col gap-4 items-center justify-center min-w-72 max-w-90">
           <div className="flex flex-col gap-4 justify-center items-center">
             <MotorActionIcon
               Icon={ArrowUpToLine}

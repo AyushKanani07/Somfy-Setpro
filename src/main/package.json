@@ -14,7 +14,7 @@
         "build": "node esbuild.config.js",
         "obfuscate": "javascript-obfuscator dist/server.js --output obfuscate/server.js",
         "clean": "tsc --build --clean",
-        "dev": "nodemon src/server.entry.ts",
+        "dev": "nodemon server.entry.ts",
         "electron:serve": "set \"APP_ENV=DEV\" && npx electron --require ts-node/register main.ts --serve",
         "compodoc": "npx compodoc -p tsconfig.doc.json",
         "clean:obfuscate": "rimraf obfuscate",
