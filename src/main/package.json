@@ -1,0 +1,96 @@
+{
+    "name": "sdn-configuration-tool",
+    "version": "2.0.9",
+    "description": "Configuration tool for SDN485 Devices",
+    "author": "Somfy",
+    "main": "main.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/NES-Corp/SDN-Config-Tool-OTA"
+    },
+    "type": "module",
+    "scripts": {
+        "postinstall": "electron-builder install-app-deps",
+        "build": "node esbuild.config.js",
+        "obfuscate": "javascript-obfuscator dist/server.js --output obfuscate/server.js",
+        "clean": "tsc --build --clean",
+        "dev": "nodemon src/server.entry.ts",
+        "electron:serve": "set \"APP_ENV=DEV\" && npx electron --require ts-node/register main.ts --serve",
+        "compodoc": "npx compodoc -p tsconfig.doc.json",
+        "clean:obfuscate": "rimraf obfuscate",
+        "build:backend": "npm run clean:obfuscate && npm run build && npm run obfuscate",
+        "electron:obfuscate": "javascript-obfuscator ../../dist/main.js --output ../../obfuscate/main.js",
+        "electron:dev": "npm run clean:obfuscate && npm run electron:build && set APP_ENV=UAT&& electron-builder build --win --publish=never",
+        "electron:build": "node esbuild.config.js"
+    },
+    "keywords": [
+        "SDN485",
+        "Somfy",
+        "Configuration",
+        "Tool",
+        "Keypad",
+        "Motor",
+        "RTS"
+    ],
+    "private": true,
+    "dependencies": {
+        "@compodoc/compodoc": "^1.1.19",
+        "@electron/remote": "^2.1.3",
+        "@types/compression": "^1.7.1",
+        "@types/dotenv": "^6.1.1",
+        "@types/validator": "^13.6.3",
+        "@types/winston": "^2.4.4",
+        "celebrate": "^15.0.0",
+        "compression": "^1.7.4",
+        "cors": "^2.8.5",
+        "crc": "^4.1.1",
+        "dotenv": "^17.2.3",
+        "electron-updater": "^6.6.2",
+        "eslint": "^9.37.0",
+        "express": "^5.1.0",
+        "multer": "^2.0.2",
+        "node-excel-export": "^1.4.4",
+        "sequelize": "^6.13.0",
+        "serialport": "^12.0.0",
+        "socket.io": "^4.4.1",
+        "sqlite3": "^5.0.2",
+        "terser": "^5.44.0",
+        "ts-node": "^10.9.2",
+        "uglify-js": "^3.15.4",
+        "underscore": "^1.13.1",
+        "winston": "^3.3.3",
+        "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.2",
+        "@types/cors": "^2.8.12",
+        "@types/express": "^5.0.3",
+        "@types/multer": "^2.0.0",
+        "@types/node": "^24.7.0",
+        "@types/sequelize": "^4.28.10",
+        "@types/socket.io": "^3.0.1",
+        "@types/uglify-js": "^3.13.2",
+        "@types/underscore": "^1.11.4",
+        "@typescript-eslint/parser": "^8.46.0",
+        "electron": "^38.2.1",
+        "electron-rebuild": "^3.2.9",
+        "esbuild": "^0.25.10",
+        "javascript-obfuscator": "^4.1.1",
+        "nodemon": "^3.1.10",
+        "tslib": "^2.3.1",
+        "typescript": "^5.9.3"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "browser": {
+        "fs": false,
+        "path": false,
+        "os": false
+    },
+    "publish": [
+        {
+            "provider": "github"
+        }
+    ]
+}

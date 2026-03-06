@@ -1,0 +1,299 @@
+/* PrimeReact CSS */
+@import "primereact/resources/themes/lara-light-blue/theme.css";
+@import "primereact/resources/primereact.min.css";
+@import "primeicons/primeicons.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  @apply bg-white text-textDarkColor;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 25 95% 53%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  /* future-proof */
+}
+
+/* Custom Scrollbar Styles */
+
+@layer utilities {
+  .scrollbar-custom {
+    @apply scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-orange-400;
+  }
+
+  .scrollbar-orange {
+    @apply scrollbar-thin scrollbar-thumb-orange-300 scrollbar-track-orange-100 hover:scrollbar-thumb-orange-500;
+  }
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+/* Medium Devices, Desktops Only */
+@media only screen and (min-width: 992px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar:hover {
+    width: 6px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 20px;
+    background-color: rgba(58, 58, 58, 0.2);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    border-radius: 20px;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  ::-webkit-scrollbar {
+    width: 5px;
+    /* You can adjust the size for smaller screens */
+    height: 6px;
+    /* You can adjust the size for smaller screens */
+  }
+
+  ::-webkit-scrollbar:hover {
+    width: 5px;
+    /* You can adjust the size for smaller screens */
+    height: 6px;
+    /* You can adjust the size for smaller screens */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 1px solid transparent;
+    /* Adjust the border for smaller screens */
+    border-radius: 15px;
+    /* You can adjust the size for smaller screens */
+    background-color: rgba(58, 58, 58, 0.2);
+    /* Adjust the color as needed */
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    border-radius: 15px;
+    /* You can adjust the size for smaller screens */
+  }
+}
+
+.p-slider .p-slider-range {
+  background: #F59E0B;
+}
+
+.p-slider .p-slider-handle {
+  border: 2px solid #F59E0B;
+}
+
+.p-slider:not(.p-disabled) .p-slider-handle:hover {
+  background: #F59E0B;
+}
+
+.p-checkbox.p-highlight .p-checkbox-box {
+  background: #F59E0B;
+}
+
+.custom-spinner .p-progress-spinner-circle {
+  stroke: #F59E0B !important;
+}
+
+.keypad-button {
+  max-width: 300px;
+}
+
+.keypad-button .key {
+  border-bottom-width: 1px;
+  min-height: 59px;
+  max-height: 59px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.keypad-button .key-x-2 {
+  border-bottom-width: 1px;
+  min-height: 118px !important;
+  max-height: 118px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.keypad-button .hide {
+  color: #fff;
+  pointer-events: none;
+}
+
+.keypad-button .active {
+  background-color: gainsboro !important;
+}
+
+.keypad-button .bottom-button {
+  height: 100%;
+  display: grid;
+  align-items: center;
+}
+
+.action-detail .active {
+  background-color: gainsboro !important;
+}
+
+.p-dropdown-items {
+  font-size: 14px;
+}
+
+.p-dropdown-label {
+  font-size: 14px;
+}
+
+.offline-command-table .p-datatable-thead>tr>th {
+  background-color: rgb(203 213 230);
+  border: 1px solid #e2e8f0 !important;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  text-align: center;
+}
+
+.offline-command-table .p-datatable .p-datatable-thead>tr>th .p-column-header-content {
+  justify-content: center !important;
+}
+
+.offline-command-table .p-datatable .p-datatable-tbody>tr>td {
+  border: 1px solid rgb(203 213 230) !important;
+}
+
+.offline-command-table .p-datatable .p-datatable-tbody>tr>td.center-cell {
+  text-align: center !important;
+}
+
+.offline-command-table .p-datatable-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.offline-command-table .p-datatable-wrapper {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.log-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.log-table thead {
+  background: rgb(203 213 225);
+  text-align: center;
+}
+
+.log-table th,
+.log-table td {
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.log-table .sent {
+  background-color: #92d0508c !important;
+}
+
+.log-table .received {
+  background-color: #f4b18361 !important;
+}

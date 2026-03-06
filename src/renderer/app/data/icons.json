@@ -1,0 +1,36 @@
+{
+    "iconConfig": [
+        {
+            "id": "dashboard",
+            "to": "/dashboard",
+            "iconName": "Home",
+            "tooltip": "Dashboard",
+            "order": 1,
+            "position": "top"
+        },
+        {
+            "id": "device-map",
+            "to": "/device-map",
+            "iconName": "Map",
+            "tooltip": "Device Map",
+            "order": 2,
+            "position": "top"
+        },
+        {
+            "id": "group-view",
+            "to": "/group-view",
+            "iconName": "Users",
+            "tooltip": "Group View",
+            "order": 3,
+            "position": "top"
+        },
+        {
+            "id": "device-config",
+            "to": "/device-config",
+            "iconName": "Settings",
+            "tooltip": "Device Config",
+            "order": 4,
+            "position": "top"
+        }
+    ]
+}

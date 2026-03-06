@@ -1,0 +1,101 @@
+.p-treenode-content {
+    @apply !p-0 !text-base focus-visible:shadow-none truncate;
+}
+
+.p-treenode-selectable {
+    @apply ring-0;
+}
+
+.p-treenode-children {
+    @apply px-2;
+}
+
+.p-icon.p-tree-toggler-icon {
+    @apply size-3;
+}
+
+/* hide p-treenode-droppoint */
+.p-treenode-droppoint {
+    @apply hidden;
+}
+
+/* Tree container styling */
+.p-tree {
+    @apply !bg-white;
+}
+
+.p-tree-container {
+    @apply !bg-white overflow-hidden;
+}
+
+/* Tree node styling */
+.p-treenode {
+    @apply w-full relative rounded-lg;
+}
+
+.p-treenode-content {
+    @apply px-2 py-1 cursor-pointer transition-colors;
+}
+
+.p-treenode-content:hover {
+    @apply bg-blue-50;
+}
+
+/* Selected node styling */
+.p-treenode.p-treenode-selected > .p-treenode-content {
+    @apply bg-blue-100;
+}
+
+/* Node label styling */
+.p-treenode-label {
+    @apply text-sm text-textDarkColor;
+}
+
+/* Tree toggler styling */
+
+.p-tree-toggler .p-icon {
+    @apply text-gray-500;
+}
+
+/* Node icon styling */
+
+/* Icon color classes by type */
+.p-treenode-content .pi-building {
+    @apply text-purple-600;
+}
+
+.p-treenode-content .pi-home {
+    @apply text-blue-600;
+}
+
+.p-treenode-content .pi-cube {
+    @apply text-gray-600;
+}
+
+.p-treenode-content .pi-window-minimize {
+    @apply text-orange-600;
+}
+
+.p-treenode-content .pi-window-maximize {
+    @apply text-green-600;
+}
+
+.p-treenode-content .pi-server {
+    @apply text-red-600;
+}
+
+.p-treenode-content .pi-sliders-h {
+    @apply text-yellow-600;
+}
+
+.p-checkbox.p-component .p-checkbox-input {
+    @apply !bg-red-300 border !border-borderColor;
+}
+
+.p-checkbox.p-component {
+    @apply min-w-5 max-w-5 min-h-5 max-h-5;
+}
+
+.p-checkbox.p-component .p-checkbox-box {
+    @apply w-full h-full border !border-borderColor !text-white;
+}

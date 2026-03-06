@@ -1,0 +1,48 @@
+.p-treeselect {
+    @apply border border-borderColor rounded-lg ring-0
+} 
+
+.p-treeselect-label-container{
+    @apply ring-0
+}
+
+.p-treeselect.p-inputwrapper-filled{
+    @apply ring-0
+}
+
+.p-treeselect .p-treeselect-label{
+    @apply !p-1.5 !px-2 text-sm
+}
+
+.p-treeselect .p-treeselect-header {
+    @apply !p-2 bg-secondaryBackground border-b border-borderColor
+}
+
+.p-treeselect .p-treeselect-filter {
+    @apply border border-borderColor p-1 px-2 text-textDarkColor placeholder:!text-textLightColor focus:ring-0 text-sm
+}
+
+.p-treenode .p-treenode-content {
+    @apply ring-0
+}
+
+.p-treeselect .p-treeselect-panel {
+    @apply !bg-white mt-1
+}
+
+.p-treeselect .p-tree-selectable{
+    @apply mt-1 p-0
+}
+
+.p-treeselect .p-treenode-children {
+    @apply pl-4
+}
+
+.p-treeselect .p-treenode-selectable
+{
+    @apply hover:bg-secondaryBackground p-0 text-textDarkColor text-base capitalize disabled:text-textLightColor
+}
+
+.p-treeselect .p-treenode-content{
+    @apply hover:bg-secondaryBackground p-0 text-base capitalize focus:ring-0 focus:outline-none focus:border-none focus:shadow-none selection:ring-0 selection:border-none selection:outline-none transition-none focus:transition-none
+}

@@ -1,0 +1,74 @@
+{
+    "appId": "com.electron.somfy",
+    "productName": "Set pro by Somfy",
+    "artifactName": "Set pro by Somfy Setup-${version}.${ext}",
+    "compression": "maximum",
+    "asar": true,
+    "directories": {
+        "buildResources": "resources",
+        "output": "../../release"
+    },
+    "asarUnpack": [],
+    "files": [
+        {
+            "from": "../../dist",
+            "to": ".",
+            "filter": [
+                "main.js"
+            ]
+        },
+        "event.js",
+        {
+            "from": "../../dist/client",
+            "to": "dist/client",
+            "filter": [
+                "**/*"
+            ]
+        },
+        "package.json",
+        "!**/*.ts",
+        "!**/*.map",
+        "!**/fsevents/**",
+        "!**/fsevents*"
+    ],
+    "extraResources": [],
+    "publish": [
+        {
+            "provider": "github",
+            "owner": "NES-Corp",
+            "repo": "SDN-Config-Tool-OTA",
+            "releaseType": "draft"
+        }
+    ],
+    "win": {
+        "icon": "../../dist/client/icons/icon.ico",
+        "target": [
+            "nsis"
+        ],
+        "publish": [
+            "github"
+        ]
+    },
+    "portable": {
+        "splashImage": "../../dist/client/icons/electron.bmp"
+    },
+    "nsis": {
+        "oneClick": false,
+        "perMachine": true,
+        "allowToChangeInstallationDirectory": true,
+        "include": "build/installer.nsh",
+        "deleteAppDataOnUninstall": true
+    },
+    "mac": {
+        "icon": "../../dist/client/icons/icon.icns",
+        "target": [
+            "dmg"
+        ]
+    },
+    "linux": {
+        "icon": "../../dist/client/icons/icon.png",
+        "target": [
+            "AppImage"
+        ]
+    }
+}
