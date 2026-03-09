@@ -113,6 +113,7 @@ export class SchemaService {
                 }
 
                 const tbl_device_check: ColumnDefinition[] = [
+                    { name: 'disp_status', type: 'TINYINT', default: '0' },
                     { name: 'sun_mode', type: 'TEXT' },
                     { name: 'dct_lock', type: 'JSON' },
                     { name: 'firmware_version', type: 'TEXT' },
@@ -247,7 +248,7 @@ export class SchemaService {
                     await dbConfig.dbInstance.sequelize.query(`ALTER TABLE tbl_offline_command ADD COLUMN sub_node_id INT;`);
                 }
 
-                // await dbConfig.dbInstance.sequelize.query('UPDATE tbl_project SET schema_version = 4;');
+                await dbConfig.dbInstance.sequelize.query('UPDATE tbl_project SET schema_version = 4;');
                 resolve(true);
             } catch (err) {
                 reject(err);

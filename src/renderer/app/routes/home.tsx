@@ -58,7 +58,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-start items-center p-8 lg:p-16 gap-9">
+    <div className="flex-1 flex flex-col justify-start items-center p-8 lg:p-16 gap-9 overflow-auto">
       <div className="flex flex-col justify-center items-center gap-5">
         <img
           src="/svg/somfy.svg"

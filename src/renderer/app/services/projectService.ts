@@ -1,3 +1,4 @@
+import { environment } from "~/constant/constant";
 import apiClient from "~/interceptor/interceptor";
 import type { CreateProjectPayload, firmwareUpdatePayload } from "~/interfaces/project";
 import { API_ENDPOINTS } from "~/utils/api-endpoints";
@@ -66,7 +67,7 @@ export const projectService = {
     try {
       const response = await apiClient.put(
         `${API_ENDPOINTS.PROJECT.UPDATE_LAST_OPENED}/${id}`,
-        { version: 3 }
+        { version: environment.schema_version }
       );
       return response.data;
     } catch (error) {

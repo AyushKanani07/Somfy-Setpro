@@ -19,6 +19,12 @@ export interface KeypadConfigLst {
   name: string;
 }
 
+export const environment = {
+  production: import.meta.env.VITE_PRODUCTION === "true",
+  environment: import.meta.env.VITE_ENVIRONMENT,
+  schema_version: Number(import.meta.env.VITE_SCHEMA_VERSION)
+};
+
 export const SELECTED_PROJECT_KEY = "selectedProjectId";
 
 export const ICON_FILL_COLOR = "#808080";

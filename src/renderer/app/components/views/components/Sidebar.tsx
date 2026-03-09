@@ -457,7 +457,11 @@ function Sidebar() {
       }
       if (isDevice) {
         const menuItems = [];
-        if (['motor', 'rts-receiver', 'rts-transmitter'].includes(node.data.device_type)) {
+        if (
+          ['motor', 'rts-receiver', 'rts-transmitter'].includes(
+            node.data.device_type,
+          )
+        ) {
           menuItems.push(
             {
               label: 'Rename',
@@ -713,7 +717,7 @@ function Sidebar() {
 
   const goToCommunicationLog = () => {
     communicationLogService.openCommunicationLogWindow();
-  }
+  };
 
   const handleTreeDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();

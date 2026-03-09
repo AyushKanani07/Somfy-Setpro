@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:dev": "react-router build && robocopy build\\client ..\\..\\dist\\client /E",
-    "build:prod": "react-router build && robocopy build\\client ..\\..\\dist\\client /E",
+    "build:dev": "react-router build --mode development && robocopy build\\client ..\\..\\dist\\client /E",
+    "build:prod": "react-router build --mode production && robocopy build\\client ..\\..\\dist\\client /E",
     "dev": "react-router dev --port 4000",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"
