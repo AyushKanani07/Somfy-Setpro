@@ -66,7 +66,7 @@ class ProjectService {
         let project: AddProject[] = project_config ? JSON.parse(project_config) : [];
         project.push(objParam);
         this._projectConfig = project;
-        return this.PROJECT_CONFIG.find(project => project.project_id === objParam.project_id);
+        return objParam;
         // return this.PROJECT_CONFIG;
     }
 
