@@ -49,7 +49,8 @@ export class ProjectController {
 
     updateLastOpen = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const project = await projectService.getProjectConfigById(req.params.project_id);
+            const projectId = Array.isArray(req.params.project_id) ? req.params.project_id[0] : req.params.project_id;
+            const project = await projectService.getProjectConfigById(projectId);
             const version = req.body.version ?? 1;
             if (project) {
                 await projectService.unSelectAllProjectConfig(project.project_id);
@@ -80,11 +81,12 @@ export class ProjectController {
 
     updateProject = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            var objBody = req.body;
-            const get_project = await projectService.getProjectConfigById(req.params.project_id);
+            let objBody = req.body;
+            const projectId = Array.isArray(req.params.project_id) ? req.params.project_id[0] : req.params.project_id;
+            const get_project = await projectService.getProjectConfigById(projectId);
             if (get_project) {
                 let project: AddProject = objBody;
-                project.project_id = req.params.project_id;
+                project.project_id = projectId;
                 await projectService.updateProjectConfig(project);
                 return HttpStatus.OkResponse("Project updated successfully", res, project);
             } else {
@@ -101,11 +103,18 @@ export class ProjectController {
                 dbConfig.dbInstance.sequelize.close();
                 dbConfig.dbInstance.sequelize = null;
             }
-            await projectService.deleteProjectConfigById(req.params.project_id);
+            const projectId = Array.isArray(req.params.project_id) ? req.params.project_id[0] : req.params.project_id;
+            await projectService.deleteProjectConfigById(projectId);
             const DB_PATH = getDBPath();
-            const file_path = path.join(DB_PATH, req.params.project_id + extension);
+            const file_path = path.join(DB_PATH, projectId + extension);
 
-            await fsp.unlink(file_path);
+            try {
+                await fsp.unlink(file_path);
+            } catch (err: any) {
+                if (err.code !== "ENOENT") {
+                    throw err;
+                }
+            }
 
             return HttpStatus.OkResponse("Project deleted successfully", res);
         } catch (err) {
@@ -115,7 +124,8 @@ export class ProjectController {
 
     getProjectById = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const project = await projectService.getProjectConfigById(req.params.project_id);
+            const projectId = Array.isArray(req.params.project_id) ? req.params.project_id[0] : req.params.project_id;
+            const project = await projectService.getProjectConfigById(projectId);
             return HttpStatus.OkResponse('Ok', res, project);
         } catch (err) {
             next(err);
