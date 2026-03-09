@@ -38,8 +38,7 @@ export class appServer {
                 next();
             });
 
-            await this.SerialConn.connectToPort('COM19');
-            // await this.SerialConn.connectToPort('COM2');
+            // await this.SerialConn.connectToPort('COM19');
             // await this.SerialConn.disconnectPort();
 
             this.app.use(express.json({ limit: '50mb' }));
