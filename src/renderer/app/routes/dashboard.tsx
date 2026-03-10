@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import { AppLayout } from "~/components/layout/AppLayout";
-import { IDELayout } from "~/components/layout/IDELayout";
 import DashboardView from "~/components/views/DashboardView";
 import { useProject } from "~/hooks";
 
@@ -11,13 +9,7 @@ function Dashboard() {
     fetchDashboardCount();
   }, []);
 
-  return (
-    <AppLayout>
-      <IDELayout>
-        <DashboardView />
-      </IDELayout>
-    </AppLayout>
-  );
+  return <DashboardView />;
 }
 
 export default Dashboard;
