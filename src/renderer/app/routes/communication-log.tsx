@@ -398,7 +398,20 @@ export default function CommunicationLog() {
     getCommunicationLogsCount();
 
     const onCommunicationLogHandler = (data: any) => {
-      setLogs((prev) => [...prev, data]);
+      setLogs((prev) => {
+        const updatedLogs = [...prev, data];
+
+        requestAnimationFrame(() => {
+          virtuosoRef.current?.scrollToIndex({
+            index: updatedLogs.length - 1,
+            align: "end",
+            behavior: "auto",
+          });
+        });
+
+        return updatedLogs;
+      });
+
       if (data.type === "sent") {
         setCount((prev) => ({ ...prev, sent: prev.sent + 1 }));
       } else if (data.type === "received") {
@@ -413,10 +426,9 @@ export default function CommunicationLog() {
     };
 
     const decodeCommandFrameHandler = (response: any) => {
-      console.log("response: ", response);
+      // console.log("response: ", response);
       if (!response.isError) {
         const data = response.data;
-        console.log("data: ", data);
         setModel((prev) => ({
           ...prev,
           destination_node_type: data.destination_node_type,
@@ -433,7 +445,7 @@ export default function CommunicationLog() {
     };
 
     const encodeCommandFrameHandler = (data: any) => {
-      console.log("data: ", data);
+      // console.log("data: ", data);
       if (!data.isError) {
         const frame = data.data;
         setFrame(frame);
@@ -485,7 +497,7 @@ export default function CommunicationLog() {
 
   useEffect(() => {
     if (!frame) return;
-    console.log("frame changed", frame);
+    // console.log("frame changed", frame);
     socket.emit(SOCKET_COMMAND.COMMUNICATION_LOG.DECODE_COMMAND_FRAME, {
       frame,
     });
@@ -509,7 +521,7 @@ export default function CommunicationLog() {
         destination_add: modelData.destination,
         data: data ? generateAndSetData(modelData, data) : {},
       };
-      console.log("payload: ", payload);
+      // console.log("payload: ", payload);
       socket.emit(
         SOCKET_COMMAND.COMMUNICATION_LOG.ENCODE_COMMAND_FRAME,
         payload,
