@@ -16,8 +16,9 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import Header from "./components/sharedComponent/Header";
 import { store } from "./store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { connectSocket } from "./services/socketService";
+import { setSomfyPort } from "./utils/apiClients";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -54,12 +55,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const [isReady, setIsReady] = useState(false);
   const location = useLocation().pathname;
   const showHeader = location !== "/" && location !== "/communication-log";
 
   useEffect(() => {
-    connectSocket();
+    async function init() {
+      await getSomfyPort();
+      connectSocket();
+      setIsReady(true);
+    }
+
+    init();
   }, []);
+
+  if (!isReady) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Provider store={store}>
@@ -98,4 +110,22 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       )}
     </main>
   );
+}
+
+
+export async function getSomfyPort() {
+  try {
+    if (window.serialPort) {
+      const app = await window.serialPort.getAppVersion();
+      if (app) {
+        if (app?.port) {
+          setSomfyPort(app.port);
+        }
+      }
+    } else {
+      console.warn('Serial port API not available');
+    }
+  } catch (error) {
+    console.error('Error getting SOMFY port:', error);
+  }
 }

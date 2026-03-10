@@ -1,19 +1,9 @@
 // ~/services/socketService.ts
 import { io, Socket } from "socket.io-client";
-import { API_BASE_URL } from "~/interceptor/interceptor";
-
-const url = API_BASE_URL.replace(/\/+$/, "") // remove trailing slashes
-  .replace(/\/api$/, ""); // remove final /api if present
+import { getApiBaseUrl } from "~/interceptor/interceptor";
 
 // Create socket with autoConnect: false to prevent automatic connection
-export const socket: Socket = io(url, {
-  path: "/socket.io",
-  transports: ["websocket", "polling"],
-  reconnection: true,
-  reconnectionDelay: 5000,
-  reconnectionDelayMax: 10000,
-  autoConnect: false, // Don't connect automatically - wait for login
-});
+export let socket: Socket;
 
 /**
  * Connects to the socket server if not already connected
@@ -21,12 +11,21 @@ export const socket: Socket = io(url, {
  * @returns boolean - true if connection initiated, false if already connected
  */
 export const connectSocket = (): boolean => {
-  if (socket.connected) {
+  if (socket && socket.connected) {
     console.info("Socket already connected:", socket.id);
     return false;
   }
 
   console.info("Initiating socket connection...");
+  const url = getApiBaseUrl().replace(/\/+$/, "").replace(/\/api$/, "");
+  socket = io(url, {
+    path: "/socket.io",
+    transports: ["websocket", "polling"],
+    reconnection: true,
+    reconnectionDelay: 5000,
+    reconnectionDelayMax: 10000,
+    autoConnect: false, // Don't connect automatically - wait for login
+  });
   socket.connect();
   return true;
 };
@@ -36,7 +35,7 @@ export const connectSocket = (): boolean => {
  * Should be called on logout
  */
 export const disconnectSocket = (): void => {
-  if (socket.connected) {
+  if (socket && socket.connected) {
     console.info("Disconnecting socket...");
     socket.disconnect();
   }

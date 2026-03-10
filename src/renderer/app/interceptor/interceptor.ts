@@ -7,12 +7,15 @@ import type {
 import axios from "axios";
 import { toast } from "sonner";
 import { getAxiosMessage } from "~/utils/helperFunctions";
+import { getSomfyPort } from "~/utils/apiClients";
 
-export const API_BASE_URL = "http://localhost:3339/api/";
+export const getApiBaseUrl = (): string => `http://localhost:${getSomfyPort()}/api/`;
+
+export const API_BASE_URL = getApiBaseUrl();
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   timeout: 60 * 1000,
   headers: {
     "Content-Type": "application/json",
@@ -22,6 +25,8 @@ const apiClient: AxiosInstance = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    config.baseURL = getApiBaseUrl();
+
     // Add auth token if available
 
     // Add request ID for tracking
