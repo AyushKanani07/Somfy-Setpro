@@ -7,36 +7,71 @@ import { useComport } from "~/hooks/useComport";
 
 function MotorMoveToEnd({
   from = "device_config",
+  type,
   title
 }: {
   from?: "motor_control_panel" | "device_config" | "motor_settings";
   title?: string;
+  type: "tilt" | "normal"
 }) {
   const { isComportConnected, isOfflineEditMode } = useComport();
   const { motorActionDisabled } = useDeviceConfig();
-  const { selectedMotorId, moveMotorToPositionThunk, stopMotorThunk, startGetMotorCurrentPosition } =
+  const { selectedMotorId, moveMotorToPositionThunk, stopMotorThunk } =
     useMotors();
 
   const handleMoveToTop = async () => {
     // Implement move to top logic
     if (motorActionDisabled && from !== "motor_settings") return;
     if (!selectedMotorId) return;
-    moveMotorToPositionThunk({
-      device_id: selectedMotorId,
-      function_type: "up",
-      isACK: true,
-    });
+
+    if (type === "normal") {
+      moveMotorToPositionThunk({
+        payload: {
+          device_id: selectedMotorId,
+          function_type: "up",
+          isACK: true,
+        },
+        getPositionType: "pulse"
+      });
+    }
+    if (type === "tilt") {
+      moveMotorToPositionThunk({
+        payload: {
+          device_id: selectedMotorId,
+          function_type: "curr_pos_angle_pulse",
+          value_tilt: 0,
+          isACK: true,
+        },
+        getPositionType: "tilt_pulse"
+      });
+    }
   };
 
   const handleMoveToBottom = async () => {
     // Implement move to bottom logic
     if (motorActionDisabled && from !== "motor_settings") return;
     if (!selectedMotorId) return;
-    moveMotorToPositionThunk({
-      device_id: selectedMotorId,
-      function_type: "down",
-      isACK: true,
-    });
+    if (type === "normal") {
+      moveMotorToPositionThunk({
+        payload: {
+          device_id: selectedMotorId,
+          function_type: "down",
+          isACK: true,
+        },
+        getPositionType: "pulse"
+      });
+    }
+    if (type === "tilt") {
+      moveMotorToPositionThunk({
+        payload: {
+          device_id: selectedMotorId,
+          function_type: "curr_pos_angle_per",
+          value_tilt: 100,
+          isACK: true,
+        },
+        getPositionType: "tilt_pulse"
+      });
+    }
   };
 
   const handleStopMotor = () => {

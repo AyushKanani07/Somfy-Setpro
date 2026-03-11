@@ -22,6 +22,7 @@ import {
   getMotorRevCountThunk,
   getMotorRollingSpeedThunk,
   getMotorThermalCountThunk,
+  getMotorTiltLimitsThunk,
   moveMotorOfFunctionThunk,
   moveMotorToPositionThunk,
   openDeleteMotorDialog,
@@ -51,7 +52,9 @@ import type {
   MotorIpPayload,
   MotorItem,
   MotorMoveOfPayload,
+  MotorMoveOfThunkPayload,
   MotorMoveToPayload,
+  MotorMoveToThunkPayload,
   MotorSocketGetPositionResponse,
   SetRampTimePayload,
   SetRollingSpeedPayload,
@@ -79,8 +82,8 @@ export const useMotors = () => {
     openDeleteMotorDialog: (motorId: number) =>
       dispatch(openDeleteMotorDialog(motorId)),
     closeDeleteMotorDialog: () => dispatch(closeDeleteMotorDialog()),
-    startGetMotorCurrentPosition: () =>
-      dispatch(startGetMotorCurrentPosition({ pos_type: "pulse" })),
+    startGetMotorCurrentPosition: (type: "pulse" | "tilt_pulse") =>
+      dispatch(startGetMotorCurrentPosition({ pos_type: type })),
     stopGetMotorCurrentPosition: () => dispatch(stopGetMotorCurrentPosition()),
     updateMotorCurrentPosition: (
       payload: MotorSocketGetPositionResponse["data"]
@@ -102,9 +105,9 @@ export const useMotors = () => {
     deleteMotorThunk: (motorId: number) => dispatch(deleteMotorThunk(motorId)),
     winkMotorThunk: (winkPayload: WinkMotorPayload) =>
       dispatch(winkMotorThunk(winkPayload)),
-    moveMotorToPositionThunk: (payload: MotorMoveToPayload) =>
+    moveMotorToPositionThunk: (payload: MotorMoveToThunkPayload) =>
       dispatch(moveMotorToPositionThunk(payload)),
-    moveMotorOfFunctionThunk: (payload: MotorMoveOfPayload) =>
+    moveMotorOfFunctionThunk: (payload: MotorMoveOfThunkPayload) =>
       dispatch(moveMotorOfFunctionThunk(payload)),
     stopMotorThunk: (payload: { motorId: number; isACK?: boolean }) =>
       dispatch(stopMotorThunk(payload)),
@@ -120,6 +123,8 @@ export const useMotors = () => {
     }) => dispatch(autoGenerateMotorIpsThunk(params)),
     getMotorLimitsThunk: (motorId: number, isRefresh?: boolean) =>
       dispatch(getMotorLimitsThunk({ motorId, isRefresh })),
+    getMotorTiltLimitsThunk: (motorId: number, isRefresh?: boolean) =>
+      dispatch(getMotorTiltLimitsThunk({ motorId, isRefresh })),
     getMotorPositionThunk: (motorId: number) =>
       dispatch(getMotorPositionThunk(motorId)),
     getMotorDirectionThunk: (motorId: number, isRefresh?: boolean) =>

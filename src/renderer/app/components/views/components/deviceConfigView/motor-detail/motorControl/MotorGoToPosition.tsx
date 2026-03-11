@@ -36,10 +36,13 @@ function MotorGoToPosition({
   const handleClickGo = () => {
     if (motorActionDisabled || !selectedMotorId) return;
     moveMotorToPositionThunk({
-      device_id: selectedMotorId,
-      function_type: "pos_pulse",
-      isACK: true,
-      value_position: Number(valuePosition),
+      payload: {
+        device_id: selectedMotorId,
+        function_type: "pos_pulse",
+        isACK: true,
+        value_position: Number(valuePosition),
+      },
+      getPositionType: "pulse",
     });
   };
 

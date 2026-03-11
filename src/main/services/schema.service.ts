@@ -92,9 +92,14 @@ export class SchemaService {
         return new Promise(async (resolve, reject) => {
             try {
                 const tbl_motor_check: ColumnDefinition[] = [
+                    { name: 'tilt_limit', type: 'INT' },
+                    { name: 'tilt_min_degree', type: 'INT' },
+                    { name: 'tilt_max_degree', type: 'INT' },
                     { name: 'pos_pulse', type: 'INT' },
                     { name: 'pos_per', type: 'INT' },
                     { name: 'pos_tilt_per', type: 'INT' },
+                    {name: 'pos_tilt_pulse', type: 'INT' },
+                    {name: 'pos_tilt_degree', type: 'INT' },
                     { name: 'app_mode', type: 'INT' },
                     { name: 'ramp', type: 'JSON' },
                     { name: 'network_lock', type: 'JSON' },

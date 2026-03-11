@@ -1,5 +1,5 @@
 import { ArrowUpDown, RotateCw } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useComport } from "~/hooks/useComport";
 import { useMotors } from "~/hooks/useMotors";
 import { socket } from "~/services/socketService";
@@ -40,13 +40,14 @@ function MotorDetails() {
         fetchMotorByIdThunk,
         startGetMotorCurrentPosition,
         getMotorLimitsThunk,
+        getMotorTiltLimitsThunk,
         getAppModeThunk,
         updateMotorIpData,
         fetchMotorIpByIdThunk,
         getMotorDirectionThunk,
         getMotorNetworkLockThunk,
     } = useMotors();
-    const { loading: deviceLoading, findDeviceType, getGroupDeviceByIdThunk, getAppVersionByDeviceIdThunk } = useDevice();
+    const { loading: deviceLoading, findDeviceType, getGroupDeviceByIdThunk, getAppVersionByDeviceIdThunk, findDeviceTypeBySubNode } = useDevice();
     const { activeDeviceConfigTab, setDeviceConfigActiveTab } = useDeviceConfig();
 
     useEffect(() => {
@@ -69,9 +70,11 @@ function MotorDetails() {
     }, []);
 
     useEffect(() => {
-        if (selectedMotorId && isComportConnected) {
+        if (selectedMotorId) {
             fetchMotorByIdThunk(selectedMotorId);
-            startGetMotorCurrentPosition();
+        }
+        if (isComportConnected) {
+            startGetMotorCurrentPosition("pulse");
         }
     }, [selectedMotorId]);
 
@@ -97,12 +100,17 @@ function MotorDetails() {
         );
     }
 
+    const motorType = findDeviceTypeBySubNode(selectedMotor?.sub_node_id || 0);
+
     const refreshMotorData = () => {
         fetchMotorCurrentPosition();
         switch (activeDeviceConfigTab) {
             case "control":
                 getMotorLimitsThunk(selectedMotorId, true);
                 getAppModeThunk(selectedMotorId, true);
+                if (motorType === "lsu_40_ac") {
+                    getMotorTiltLimitsThunk(selectedMotorId, true);
+                }
                 break;
             case "ip":
                 fetchMotorIpByIdThunk(selectedMotorId, true);
@@ -115,7 +123,6 @@ function MotorDetails() {
                 getMotorDirectionThunk(selectedMotorId!, true);
                 getMotorLimitsThunk(selectedMotorId, true);
                 getMotorNetworkLockThunk(selectedMotorId!, true);
-                toast.info("Not implemented yet");
                 break;
             case "actions":
                 getAppVersionByDeviceIdThunk(selectedMotorId!, true);
@@ -155,6 +162,11 @@ function MotorDetails() {
         }
     }
 
+    const isLimitSet = useMemo(() => {
+        const isTiltLimitSet = selectedMotor?.tbl_motor.pos_tilt_per !== 255;
+        return selectedMotor?.is_limit_set && (selectedMotor?.tbl_motor.app_mode === 1 ? isTiltLimitSet : true);
+    }, [selectedMotor]);
+
     return (
         <div className="w-full h-full flex flex-col justify-start items-start gap-2 p-4">
             {/* motor info and position */}
@@ -171,7 +183,7 @@ function MotorDetails() {
                     </span>
                 </div>
                 <div className="flex justify-start items-center gap-2">
-                    <span className="text-textDarkColor font-light text-base mr-4">
+                    <span className="text-textDarkColor font-light text-base">
                         Current Position:{" "}
                         {selectedMotor?.is_limit_set
                             ? selectedMotor?.tbl_motor.pos_pulse !== undefined &&
@@ -180,6 +192,20 @@ function MotorDetails() {
                                 : "0 (0%)"
                             : "Limit Not Set"}
                     </span>
+
+                    {(motorType === "lsu_40_ac" && (selectedMotor?.tbl_motor.app_mode == 1 || selectedMotor?.tbl_motor.app_mode == 3)) && (
+                        <>
+                         | Tilt Pos.:
+                         {isLimitSet ? (
+                            <>
+                                <span>{"("}{selectedMotor?.tbl_motor.pos_tilt_per || 0}%{")"}</span>
+                                <span> {"("}{selectedMotor?.tbl_motor.pos_tilt_degree || 0}<span>&#176;</span>{")"}</span>
+                            </>
+                         ) : (
+                            <span>Limit not set</span>
+                         )}
+                        </>
+                    )}
 
                     <TooltipComponent content="Refresh Motor Data" direction="top">
                         <button

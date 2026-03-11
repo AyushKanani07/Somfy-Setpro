@@ -240,8 +240,8 @@ export class LSU40Motor extends GenericMotor {
 	};
 
 	protected ctrlMoveToDataFrame = (data: CtrlMoveTo) => {
-		if (data.function_id < 0x00 || data.function_id > 0x04) {
-			throw new Error('Function id should be between 0 and 4');
+		if (data.function_id < 0x00 || data.function_id > 0x10) {
+			throw new Error('Function id should be between 0 and 16');
 		}
 		let frame = Buffer.alloc(4);
 		frame.writeUInt8(data.function_id, 0);

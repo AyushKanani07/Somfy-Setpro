@@ -206,7 +206,7 @@ function MotorLimit() {
       </div>
       <div className="flex flex-col gap-6 mx-auto">
         <div className="flex flex-row">
-          <MotorMoveToEnd from="motor_settings" title="Continues Movement" />
+          <MotorMoveToEnd from="motor_settings" type="normal" title="Continues Movement" />
           <MotorHoldToMove from="motor_settings" title="Hold to Move" />
         </div>
         <div className="mx-auto">

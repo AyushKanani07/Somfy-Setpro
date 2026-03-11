@@ -43,6 +43,10 @@ export interface TblMotor {
   pos_pulse: number | null;
   pos_tilt_per: number | null;
   pos_tilt_pulse: number | null;
+  pos_tilt_degree: number | null;
+  tilt_limit: number | null;
+  tilt_min_degree: number | null;
+  tilt_max_degree: number | null;
   app_mode: number | null;
   network_lock: {
     isLocked: boolean;
@@ -94,9 +98,11 @@ export interface MotorSocketGetPositionResponse {
   status: string;
   data: {
     ip: number | null;
-    position_percentage: number | null;
-    position_pulse: number | null;
-    tilting_percentage: number | null;
+    pos_per: number | null;
+    pos_pulse: number | null;
+    pos_tilt_per: number | null;
+    pos_tilt_pulse?: number | null;
+    pos_tilt_degree?: number | null;
   };
 }
 
@@ -116,6 +122,12 @@ export interface MotorMoveToPayload {
   function_type: MoveFunctionType;
   isACK: boolean;
   value_position?: number;
+  value_tilt?: number;
+}
+
+export interface MotorMoveToThunkPayload {
+  payload: MotorMoveToPayload;
+  getPositionType: "pulse" | "tilt_pulse";
 }
 
 export interface MotorMoveToAllPayload {
@@ -150,6 +162,11 @@ export interface MotorMoveOfPayload {
   value_position?: number;
 }
 
+export interface MotorMoveOfThunkPayload {
+  payload: MotorMoveOfPayload;
+  getPositionType: "pulse" | "tilt_pulse";
+}
+
 //#region motor IP payload
 export interface MotorIpData {
   index: number;
@@ -181,6 +198,7 @@ export interface MotorIpPayload {
   function_type: IpFunctionType;
   ip_index: number;
   value_position?: number;
+  value_tilt?: number;
 }
 
 export interface SetMotorLimitPayload {

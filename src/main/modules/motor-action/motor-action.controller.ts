@@ -375,12 +375,22 @@ export class MotorActionController {
     getMotorTiltLimits = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { device_id } = req.params;
+            const isRefresh = req.query.refresh === 'true';
+
             if (!device_id) return HttpStatus.BadRequestResponse('Device ID is required', res);
             const deviceData: DeviceModel = await this.commonService.getDevicedataForCommand(+device_id);
-            const result = await this.motorActionService.getMotorTiltLimits(deviceData);
-            if (result.isError) return HttpStatus.BadRequestResponse(result.message, res);
 
-            return HttpStatus.OkResponse(result.message, res, result.data);
+            if (isRefresh) {
+                const result = await this.motorActionService.getMotorTiltLimits(deviceData);
+                if (result.isError) return HttpStatus.BadRequestResponse(result.message, res);
+                return HttpStatus.OkResponse(result.message, res, result.data);
+            }
+
+            const limits = await dbConfig.dbInstance.motorModel.findOne({
+                attributes: ['tilt_min_degree', 'tilt_max_degree', 'tilt_limit'],
+                where: { device_id: +device_id }
+            });
+            return HttpStatus.OkResponse('OK', res, limits);
         } catch (error) {
             next(error);
         }

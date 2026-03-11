@@ -76,10 +76,13 @@ export const MotorIP = ({
     const goToIpPosition = (ip: MotorIpData) => {
         if (!selectedMotorId || ip.pulse == null || ip.pulse === selectedMotor?.tbl_motor.pos_pulse) return;
         moveMotorToPositionThunk({
-            device_id: selectedMotorId,
-            function_type: "ip",
-            isACK: true,
-            value_position: ip.index,
+            payload: {
+                device_id: selectedMotorId,
+                function_type: "ip",
+                isACK: true,
+                value_position: ip.index,
+            },
+            getPositionType: "pulse"
         });
 
     }

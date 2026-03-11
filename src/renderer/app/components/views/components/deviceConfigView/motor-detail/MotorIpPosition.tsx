@@ -35,6 +35,7 @@ import { MotorIP } from "./motorControl/MotorIP";
 import MotorStepToMovement from "./motorControl/MotorStepToMovement";
 import { toast } from "sonner";
 import { useComport } from "~/hooks/useComport";
+import MotorTiltPosition from "./motorControl/MotorTiltPosition";
 
 function MotorIpPosition() {
   const { isOfflineEditMode, isComportConnected } = useComport();
@@ -70,18 +71,24 @@ function MotorIpPosition() {
   const handleNextIpUp = () => {
     // Logic to go to the next IP up
     moveMotorOfFunctionThunk({
-      device_id: selectedMotorId!,
-      function_type: "ip_up",
-      isACK: true,
+      payload: {
+        device_id: selectedMotorId!,
+        function_type: "ip_up",
+        isACK: true,
+      },
+      getPositionType: "pulse"
     });
   };
 
   const handleNextIpDown = () => {
     // Logic to go to the next IP down
     moveMotorOfFunctionThunk({
-      device_id: selectedMotorId!,
-      function_type: "ip_down",
-      isACK: true,
+      payload: {
+        device_id: selectedMotorId!,
+        function_type: "ip_down",
+        isACK: true,
+      },
+      getPositionType: "pulse"
     });
   };
 
@@ -147,12 +154,17 @@ function MotorIpPosition() {
     if (!existingIp || existingIp.pulse == null) {
       return toast.error(`IP${currentIPIndex} is not set.`);
     }
-    moveMotorToPositionThunk({
-      device_id: selectedMotorId,
-      function_type: "ip",
-      isACK: true,
-      value_position: currentIPIndex,
-    });
+    moveMotorToPositionThunk(
+      {
+        payload:{
+          device_id: selectedMotorId,
+          function_type: "ip",
+          isACK: true,
+          value_position: currentIPIndex,
+        },
+        getPositionType: "pulse"
+      }
+    );
 
   }
 
@@ -214,29 +226,49 @@ function MotorIpPosition() {
         <MotorIP setCurrentIPIndex={setCurrentIPIndex} currentIPIndex={currentIPIndex} />
         <div className="flex flex-row flex-wrap h-fit max-h-[280px] justify-center items-center gap-4">
           <MotorStepToMovement />
-          <MotorGoToPosition
-            title={`Enter value for IP${currentIPIndex !== null ? `${currentIPIndex}` : ""}`}
-            from="motor_ip_position"
-            showIpButtons
-            onIpButtonClick={handleIPSet}
-            showBottomText={false}
-            disabled={motorActionDisabled || currentIPIndex === null}
-            currentIpIndex={currentIPIndex}
-          // ipValuePercentage={
-          //   currentIPIndex !== null
-          //     ? selectedMotor?.tbl_motor?.ip_data?.[
-          //       currentIPIndex - 1
-          //     ]?.percentage?.toString() || ""
-          //     : ""
-          // }
-          // ipValuePosition={
-          //   currentIPIndex !== null
-          //     ? selectedMotor?.tbl_motor?.ip_data?.[
-          //       currentIPIndex - 1
-          //     ]?.pulse?.toString() || ""
-          //     : ""
-          // }
-          />
+          {(selectedMotor?.tbl_motor.app_mode == 0 || selectedMotor?.tbl_motor.app_mode == 2) && (
+            <MotorGoToPosition
+              title={`Enter value for IP${currentIPIndex !== null ? `${currentIPIndex}` : ""}`}
+              from="motor_ip_position"
+              showIpButtons
+              onIpButtonClick={handleIPSet}
+              showBottomText={false}
+              disabled={motorActionDisabled || currentIPIndex === null}
+              currentIpIndex={currentIPIndex}
+            // ipValuePercentage={
+            //   currentIPIndex !== null
+            //     ? selectedMotor?.tbl_motor?.ip_data?.[
+            //       currentIPIndex - 1
+            //     ]?.percentage?.toString() || ""
+            //     : ""
+            // }
+            // ipValuePosition={
+            //   currentIPIndex !== null
+            //     ? selectedMotor?.tbl_motor?.ip_data?.[
+            //       currentIPIndex - 1
+            //     ]?.pulse?.toString() || ""
+            //     : ""
+            // }
+            />
+          )}
+          {selectedMotor?.tbl_motor.app_mode == 1 && (
+            <>
+              <MotorTiltPosition
+                title={`Enter value for IP${currentIPIndex !== null ? `${currentIPIndex}` : ""}`}
+                from="ip_position"
+                showIpButtons
+                showBottomText={false}
+                disabled={motorActionDisabled || currentIPIndex === null}
+                currentIpIndex={currentIPIndex}
+              />
+
+              <MotorStepToMovement title="Step Movement" 
+                showMsInput={false} 
+                showPulsesInput={false}
+                showTiltInput={true}
+              />
+            </>
+          )}
           <div className="flex flex-col justify-center items-center gap-4">
             <SetProButton
               onClick={goToIpPosition}

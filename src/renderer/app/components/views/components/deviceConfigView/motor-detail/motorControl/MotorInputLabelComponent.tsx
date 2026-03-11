@@ -8,6 +8,7 @@ function MotorInputLabelComponent({
   disabled = false,
   error,
   placeholder,
+  isNagativeAllowed = false,
 }: {
   value: number | string; // <-- allow empty string
   labelText: string;
@@ -15,6 +16,7 @@ function MotorInputLabelComponent({
   error?: string;
   onChange?: (value: number | string) => void; // <-- allow string
   placeholder?: string;
+  isNagativeAllowed?: boolean;
 }) {
   return (
     <div className="relative">
@@ -27,7 +29,7 @@ function MotorInputLabelComponent({
         <div className="w-[50%] h-full">
           <input
             type="number"
-            min={0} // restrict negatives at HTML level
+            min={isNagativeAllowed ? undefined : 0} // restrict negatives at HTML level
             disabled={disabled}
             placeholder={placeholder}
             className="w-full h-full text-center bg-transparent outline-none border-none placeholder:text-textLightColor/50"
@@ -44,7 +46,7 @@ function MotorInputLabelComponent({
               const num = Number(raw);
 
               // block negative input
-              if (num < 0) {
+              if (num < 0 && !isNagativeAllowed) {
                 return;
               }
 

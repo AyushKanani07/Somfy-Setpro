@@ -493,10 +493,10 @@ export const motorService = {
   },
 
   //#region get motor tilt limit
-  getMotorTiltLimit: async (device_id: number) => {
+  getMotorTiltLimit: async (device_id: number, isRefresh?: boolean) => {
     try {
       const response = await apiClient.get(
-        `${API_ENDPOINTS.MOTOR_ACTION.MOTOR_TILT_LIMIT}/${device_id}`
+        `${API_ENDPOINTS.MOTOR_ACTION.MOTOR_TILT_LIMIT}/${device_id}${isRefresh ? '?refresh=true' : ''}`
       );
       return response.data;
     } catch (error) {

@@ -300,15 +300,24 @@ export class MotorActionService {
             if (getPositionResult.isError) return { message: getPositionResult.message, isError: true }
 
             const data = getPositionResult.data;
+
+            const updateData: any = {
+                pos_pulse: data.position_pulse,
+                pos_per: data.position_percentage,
+                pos_tilt_per: data.tilting_percentage
+            };
+            if (data.tilting_degree !== undefined) updateData.pos_tilt_degree = data.tilting_degree;
+            if (data.tilting_pulse !== undefined) updateData.pos_tilt_pulse = data.tilting_pulse;
+
             await dbConfig.dbInstance.motorModel.update(
-                { pos_pulse: data.position_pulse, pos_per: data.position_percentage, pos_tilt_per: data.tilting_percentage },
+                updateData,
                 { where: { device_id: device_data.device_id } }
             );
 
             return {
                 message: `Motor position received successfully`,
                 isError: false,
-                data: data
+                data: updateData
             };
         } catch (error) {
             return {
@@ -942,10 +951,21 @@ export class MotorActionService {
             const limitsResult = await promiseRegistry.waitForTransaction(command.transaction_id, "POST_TILT_LIMITS");
             if (limitsResult.isError) return { message: limitsResult.message, isError: true }
 
+            const data = limitsResult.data;
+            const updatedData = {
+                tilt_limit: data.tilt_range,
+                tilt_min_degree: data.min_angle_degrees,
+                tilt_max_degree: data.max_angle_degrees
+            }
+            await dbConfig.dbInstance.motorModel.update(
+                updatedData,
+                { where: { device_id: device_data.device_id } }
+            );
+
             return {
                 message: `Motor tilt limits received successfully`,
                 isError: false,
-                data: limitsResult.data
+                data: updatedData
             };
         } catch (error) {
             throw error;

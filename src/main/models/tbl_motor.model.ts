@@ -27,6 +27,18 @@ export function MotorModel(sequelize: Sequelize) {
             type: DataTypes.INTEGER(),
             allowNull: true
         },
+        tilt_limit: {
+            type: DataTypes.INTEGER(),
+            allowNull: true
+        },
+        tilt_min_degree: {
+            type: DataTypes.INTEGER(),
+            allowNull: true
+        },
+        tilt_max_degree: {
+            type: DataTypes.INTEGER(),
+            allowNull: true
+        },
         up_speed: {
             type: DataTypes.INTEGER(),
             allowNull: true
@@ -60,6 +72,14 @@ export function MotorModel(sequelize: Sequelize) {
             allowNull: true
         },
         pos_tilt_per: {
+            type: DataTypes.INTEGER(),
+            allowNull: true
+        },
+        pos_tilt_pulse: {
+            type: DataTypes.INTEGER(),
+            allowNull: true
+        },
+        pos_tilt_degree: {
             type: DataTypes.INTEGER(),
             allowNull: true
         },

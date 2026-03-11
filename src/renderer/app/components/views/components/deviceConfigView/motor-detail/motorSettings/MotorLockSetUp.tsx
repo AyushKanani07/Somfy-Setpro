@@ -136,7 +136,7 @@ function MotorLockSetUp() {
         <MotorIP setCurrentIPIndex={setCurrentIPIndex} currentIPIndex={currentIPIndex} />
         <div className="flex flex-row h-fit max-h-[280px] justify-center items-start gap-4">
           <MotorGoToPosition />
-          <MotorMoveToEnd />
+          <MotorMoveToEnd type="normal"/>
         </div>
       </div>
     </div >

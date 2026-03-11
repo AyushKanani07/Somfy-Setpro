@@ -9,7 +9,9 @@ import type {
   MotorIpPayload,
   MotorItem,
   MotorMoveOfPayload,
+  MotorMoveOfThunkPayload,
   MotorMoveToPayload,
+  MotorMoveToThunkPayload,
   MotorSocketGetPositionResponse,
   SetRampTimePayload,
   SetRollingSpeedPayload,
@@ -122,10 +124,13 @@ export const winkMotorThunk = createAsyncThunk(
 //#region Move Motor to Position Thunk
 export const moveMotorToPositionThunk = createAsyncThunk(
   "motor/moveMotorToPosition",
-  async (payload: MotorMoveToPayload, { rejectWithValue }) => {
+  async (data: MotorMoveToThunkPayload, { rejectWithValue, getState  }) => {
     try {
-      const response = await motorService.moveMotorToPosition(payload);
-      return response.data;
+      const response = await motorService.moveMotorToPosition(data.payload);
+      return {
+        data: response.data,
+        getPositionType: data.getPositionType
+      };
     } catch (error) {
       const errMessage = getAxiosMessage(error);
       return rejectWithValue(errMessage);
@@ -136,10 +141,13 @@ export const moveMotorToPositionThunk = createAsyncThunk(
 //#region Move Motor of Function Thunk
 export const moveMotorOfFunctionThunk = createAsyncThunk(
   "motor/moveMotorOfFunction",
-  async (payload: MotorMoveOfPayload, { rejectWithValue }) => {
+  async (data: MotorMoveOfThunkPayload, { rejectWithValue, getState }) => {
     try {
-      const response = await motorService.moveMotorOfPosition(payload);
-      return response.data;
+      const response = await motorService.moveMotorOfPosition(data.payload);
+      return {
+        data: response.data,
+        getPositionType: data.getPositionType
+      };
     } catch (error) {
       const errMessage = getAxiosMessage(error);
       return rejectWithValue(errMessage);
@@ -234,6 +242,20 @@ export const getMotorLimitsThunk = createAsyncThunk(
       const response = await motorService.getMotorLimits(motorId, isRefresh);
       const isLimitSet = response.data.up_limit !== 65535 && response.data.down_limit !== 65535;
       dispatch(updateDeviceIsLimitSet({ deviceId: motorId, isLimitSet }))
+      return response.data;
+    } catch (error) {
+      const errMessage = getAxiosMessage(error);
+      return rejectWithValue(errMessage);
+    }
+  }
+);
+
+//#region get motor tilt limits
+export const getMotorTiltLimitsThunk = createAsyncThunk(
+  "motor/getMotorTiltLimits",
+  async ({ motorId, isRefresh }: { motorId: number, isRefresh?: boolean }, { rejectWithValue }) => {
+    try {
+      const response = await motorService.getMotorTiltLimit(motorId, isRefresh);
       return response.data;
     } catch (error) {
       const errMessage = getAxiosMessage(error);
@@ -593,12 +615,17 @@ const motorSlice = createSlice({
       state,
       action: PayloadAction<MotorSocketGetPositionResponse["data"]>
     ) {
-      const { ip, position_percentage, position_pulse, tilting_percentage } =
-        action.payload;
+      const { pos_pulse, pos_per, pos_tilt_per } = action.payload;
       if (state.selectedMotor) {
-        state.selectedMotor.tbl_motor.pos_pulse = position_pulse;
-        state.selectedMotor.tbl_motor.pos_per = position_percentage;
-        state.selectedMotor.tbl_motor.pos_tilt_per = tilting_percentage;
+        state.selectedMotor.tbl_motor.pos_pulse = pos_pulse;
+        state.selectedMotor.tbl_motor.pos_per = pos_per;
+        state.selectedMotor.tbl_motor.pos_tilt_per = pos_tilt_per;
+        if (action.payload.pos_tilt_degree !== undefined && action.payload.pos_tilt_degree !== null) {
+          state.selectedMotor.tbl_motor.pos_tilt_degree = action.payload.pos_tilt_degree;
+        }
+        if (action.payload.pos_tilt_pulse !== undefined && action.payload.pos_tilt_pulse !== null) {
+          state.selectedMotor.tbl_motor.pos_tilt_pulse = action.payload.pos_tilt_pulse;
+        }
       }
     },
 
@@ -750,7 +777,7 @@ const motorSlice = createSlice({
       })
       .addCase(moveMotorToPositionThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.getPositionType = "pulse";
+        state.getPositionType = action.payload.getPositionType;
         state.getMotorCurrentPosition = true;
       })
       .addCase(moveMotorToPositionThunk.rejected, (state, action) => {
@@ -765,10 +792,20 @@ const motorSlice = createSlice({
     });
 
     //#region move Motor of Position builder
-    builder.addCase(moveMotorOfFunctionThunk.fulfilled, (state, action) => {
-      state.loading = false;
-      state.getMotorCurrentPosition = true;
-    });
+    builder
+      .addCase(moveMotorOfFunctionThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(moveMotorOfFunctionThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.getPositionType = action.payload.getPositionType;
+        state.getMotorCurrentPosition = true;
+      })
+      .addCase(moveMotorOfFunctionThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
     //#region fetch MotorIpByIdThunk builder
     builder
@@ -851,6 +888,26 @@ const motorSlice = createSlice({
         state.error = action.payload as string;
       });
 
+    //region get Motor Tilt Limits thunk builder
+    builder
+      .addCase(getMotorTiltLimitsThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMotorTiltLimitsThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload;
+        if (state.selectedMotor) {
+          state.selectedMotor.tbl_motor.tilt_limit = payload.tilt_limit;
+          state.selectedMotor.tbl_motor.tilt_min_degree = payload.tilt_min_degree;
+          state.selectedMotor.tbl_motor.tilt_max_degree = payload.tilt_max_degree;
+        }
+      })
+      .addCase(getMotorTiltLimitsThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
     //#region get Motor Position thunk builder
     builder
       .addCase(getMotorPositionThunk.pending, (state) => {
@@ -860,11 +917,17 @@ const motorSlice = createSlice({
       .addCase(getMotorPositionThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.getMotorCurrentPosition = false;
-        const { ip, position_percentage, position_pulse, tilting_percentage } = action.payload;
+        const { pos_per, pos_pulse, pos_tilt_per } = action.payload;
         if (state.selectedMotor) {
-          state.selectedMotor.tbl_motor.pos_pulse = position_pulse;
-          state.selectedMotor.tbl_motor.pos_per = position_percentage;
-          state.selectedMotor.tbl_motor.pos_tilt_per = tilting_percentage;
+          state.selectedMotor.tbl_motor.pos_pulse = pos_pulse;
+          state.selectedMotor.tbl_motor.pos_per = pos_per;
+          state.selectedMotor.tbl_motor.pos_tilt_per = pos_tilt_per;
+          if (action.payload.pos_tilt_degree !== undefined && action.payload.pos_tilt_degree !== null) {
+            state.selectedMotor.tbl_motor.pos_tilt_degree = action.payload.pos_tilt_degree;
+          }
+          if (action.payload.pos_tilt_pulse !== undefined && action.payload.pos_tilt_pulse !== null) {
+            state.selectedMotor.tbl_motor.pos_tilt_pulse = action.payload.pos_tilt_pulse;
+          }
         }
       })
       .addCase(getMotorPositionThunk.rejected, (state, action) => {
